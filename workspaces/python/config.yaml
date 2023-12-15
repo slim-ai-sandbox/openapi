@@ -1,0 +1,5 @@
+generatorName: python
+packageName: workspace_client
+packageVersion: 1.0.0
+generateSourceCodeOnly: true
+
