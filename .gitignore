@@ -65,4 +65,5 @@ target/
 #Ipython Notebook
 .ipynb_checkpoints
 workspaces/python/workspace_client
+.openapi-generator
 
