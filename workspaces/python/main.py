@@ -10,8 +10,7 @@ from workspace_client.exceptions import ApiException as ApiException
 
 # Configure HTTP basic authorization: ApiAuth
 configuration = workspace_client.Configuration(
-    # host="https://platform.slim.dev",
-    host="https://platform.zero.dev.saas.getslim.ai",
+    host="https://platform.slim.dev",
     username=os.environ["USERNAME"],
     password=os.environ["PASSWORD"]
 )
