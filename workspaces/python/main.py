@@ -11,6 +11,9 @@ from workspace_client.exceptions import ApiException as ApiException
 # Configure HTTP basic authorization: ApiAuth
 configuration = workspace_client.Configuration(
     host="https://platform.slim.dev",
+    # Define the username and password as environment variables.
+    # username is usually api.token
+    # password is a token that can be generated in the slim UI under Personal Info / Tokens tab
     username=os.environ["USERNAME"],
     password=os.environ["PASSWORD"]
 )
