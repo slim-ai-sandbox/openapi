@@ -1,0 +1,653 @@
+openapi: 3.0.0
+info:
+  title: Slim Workspaces REST API
+  version: 2.0.0
+  description: |
+    This is the Workspace REST API
+security:
+  - ApiAuth: [ ]
+servers:
+  - url: 'https://platform.slim.dev'
+paths:
+  /workspaces:
+    get:
+      summary: List workspaces the user has permissions to access
+      operationId: listWorkspaces
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  data:
+                    $ref: '#/components/schemas/WorkspaceList'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
+    post:
+      summary: Create a new workspace
+      operationId: createWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceRequest'
+      responses:
+        '201':
+          description: OK, the workspace was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
+
+  /workspaces/{workspace-id}:
+    get:
+      summary: get the given workspace
+      operationId: getWorkspace
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+      responses:
+        '200':
+          description: Gets the given workspace
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+        '404':
+          $ref: '#/components/responses/Status404'
+      tags:
+        - workspaces
+    delete:
+      summary: delete the workspace
+      operationId: deleteWorkspace
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+      responses:
+        '204':
+          description: The workspace was deleted, no data returned
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+        '404':
+          $ref: '#/components/responses/Status404'
+      tags:
+        - workspaces
+    put:
+      summary: update the workspace.
+      operationId: updateWorkspace
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspaceRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/Workspace'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+        '404':
+          $ref: '#/components/responses/Status404'
+      tags:
+        - workspaces
+
+
+  /workspaces/{workspace-id}/releases:
+    get:
+      summary: List all releases for the given workspace
+      operationId: listWorkspacesReleases
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  data:
+                    $ref: '#/components/schemas/WorkspaceReleaseList'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
+    post:
+      summary: Create a new workspace release
+      operationId: createWorkspaceRelease
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceReleaseRequest'
+      responses:
+        '201':
+          description: OK, the release was created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/WorkspaceRelease'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
+
+  /workspaces/{workspace-id}/releases/{release-id}:
+    get:
+      summary: get the workspace release
+      operationId: getWorkspaceRelease
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+      responses:
+        '200':
+          description: The given workspace release  data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  data:
+                    $ref: '#/components/schemas/WorkspaceRelease'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+        '404':
+          $ref: '#/components/responses/Status404'
+      tags:
+        - workspaces
+    put:
+      summary: updates the name of the workspace release.  Adding and removing images from the release is done via separate API calls. (see below)
+      operationId: updateWorkspaceRelease
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspaceReleaseRequest'
+      responses:
+        '200':
+          description: The response data for the given workspace release
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/WorkspaceRelease'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+        '404':
+          $ref: '#/components/responses/Status404'
+      tags:
+        - workspaces
+
+  /workspaces/{workspace-id}/releases/{release-id}/images:
+    post:
+      summary: Add images to the workspace release
+      operationId: addWorkspaceReleaseImages
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddImagesToReleaseRequest'
+      responses:
+        '201':
+          description: The objects added to the release
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  data:
+                    $ref: '#/components/schemas/WorkspaceReleaseImagesList'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+        '404':
+          $ref: '#/components/responses/Status404'
+      tags:
+        - workspaces
+  /workspaces/{workspace-id}/releases/{release-id}/images/{image-id}:
+    delete:
+        summary: Delete an image from the workspace release
+        operationId: deleteWorkspaceReleaseImage
+        parameters:
+            - $ref: '#/components/parameters/WorkspacePathParam'
+            - $ref: '#/components/parameters/ReleasePathParam'
+            - $ref: '#/components/parameters/ImagePathParam'
+        responses:
+            '204':
+              description: The image was deleted from the release
+            '400':
+              $ref: '#/components/responses/Status400'
+            '401':
+              $ref: '#/components/responses/Status401'
+            '403':
+              $ref: '#/components/responses/Status403'
+            '404':
+              $ref: '#/components/responses/Status404'
+        tags:
+            - workspaces
+
+components:
+  parameters:
+    CursorQueryParam:
+      in: query
+      name: cursor
+      required: false
+      description: The page cursor to retrieve the next page of results
+      schema:
+        type: string
+    LimitQueryParam:
+      in: query
+      name: limit
+      required: false
+      description: The page size limit to retrieve
+      schema:
+        type: integer
+    SortQueryParam:
+      in: query
+      name: sort
+      required: false
+      description: The sort direction
+      schema:
+        type: string
+        enum:
+          - ASC
+          - DESC
+    SortFieldQueryParam:
+      in: query
+      name: sort_field
+      required: false
+      description: An additional sort field
+      schema:
+        type: string
+        enum:
+          - name
+          - scanner_version
+          - scanner_db_version
+          - critical
+          - high
+          - medium
+          - low
+          - negligible
+    WorkspacePathParam:
+      in: path
+      name: workspace-id
+      required: true
+      description: The workspace ID
+      schema:
+        type: string
+    ReleasePathParam:
+      in: path
+      name: release-id
+      required: true
+      description: The release ID
+      schema:
+        type: string
+
+    ImagePathParam:
+      in: path
+      name: image-id
+      required: true
+      description: The image ID
+      schema:
+        type: string
+
+  schemas:
+    BasicAPIReply:
+      type: object
+      properties:
+        error:
+          description: Error message
+          example: something bad happened
+          type: string
+        success:
+          description: true on success
+          example: true
+          type: boolean
+      required:
+        - success
+    Cursor:
+      type: object
+      properties:
+        prev:
+          type: string
+          description: cursor value for the previous page
+          example: 'SG93IG1hbnkgZGV2ZWxvcGVycyBkb2VzIGl0IHRha2UgdG8gc2NyZXcgaW4gYSBsaWdodGJ1bGI='
+        next:
+          type: string
+          description: cursor value for the next page
+          example: 'Tm9uZS4gSXRzIGEgaGFyZHdhcmUgcHJvYmxlbS4='
+    CountType:
+      type: integer
+      description: count of data records
+      example: 1
+    DigestType:
+      type: string
+      pattern: ^sha256:[0-9a-f]{64}$
+      description: |
+        The digest of the image index manifest.
+
+    AddImagesToReleaseRequest:
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            type: string
+          description: A list of images the release.
+          example: { "docker.io/ubuntu:latest@sha256:c9cf959fd83770dfdefd8fb42cfef0761432af36a764c077aed54bbc5bb25368" }
+
+    WorkspaceReleaseImagesList:
+      type: array
+      items:
+        $ref: '#/components/schemas/WorkspaceReleaseImage'
+    WorkspaceReleaseImage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The workspace release image ID
+          example: 12345678-1234-1234-1234-123456789012
+        created_at:
+          type: string
+          format: date-time
+          description: The creation time of the record
+        updated_at:
+          type: string
+          format: date-time
+          description: The time of the last update to the record
+        revision:
+          type: integer
+          description: The revision number of the record
+          example: 1
+        workspace_id:
+          type: string
+          description: The workspace ID
+        workspace_release_id:
+          type: string
+          description: The workspace release ID
+        registry:
+          type: string
+          description: The registry of the image
+          example: docker.io
+        repository:
+          type: string
+          description: The repository of the image
+          example: ubuntu
+        tag:
+          type: string
+          description: The tag of the image
+          example: latest
+        digest:
+          type: string
+          description: The digest of the image
+          example: sha256:c9cf959fd83770dfdefd8fb42cfef0761432af36a764c077aed54bbc5bb25368
+
+
+    CreateWorkspaceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The workspace name
+          example: My Workspace
+
+    UpdateWorkspaceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The workspace name
+          example: My Workspace
+
+    CreateWorkspaceReleaseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The workspace release name
+          example: My Workspace release
+        workspace_id:
+          type: string
+          description: The workspace ID
+        images:
+          type: array
+          items:
+            type: string
+          description: An optional list of images the release.  Images can be added in a separate POST call to workspace/{workspace-id}/releases/{release-id}/images
+          example: ["docker.io/ubuntu:latest@sha256:c9cf959fd83770dfdefd8fb42cfef0761432af36a764c077aed54bbc5bb25368" ]
+
+    UpdateWorkspaceReleaseRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The workspace release name
+          example: My Workspace release
+
+    Workspace:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The workspace ID
+          example: 12345678-1234-1234-1234-123456789012
+        created_at:
+          type: string
+          format: date-time
+          description: The creation time of the record
+        updated_at:
+          type: string
+          format: date-time
+          description: The time of the last update to the record
+        revision:
+          type: integer
+          description: The revision number of the record
+          example: 1
+        name:
+          type: string
+          description: The workspace name
+          example: My Workspace
+        owner_org_id:
+          type: string
+          description: The ID of the organization that owns the workspace
+        member_type:
+          type: string
+          description: The type of member the requesting user has in this workspace
+        member_role:
+          type: string
+          description: The role of the requesting user in this workspace
+
+
+    WorkspaceRelease:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The workspace ID
+          example: 12345678-1234-1234-1234-123456789012
+        created_at:
+          type: string
+          format: date-time
+          description: The creation time of the record
+        updated_at:
+          type: string
+          format: date-time
+          description: The time of the last update to the record
+        revision:
+          type: integer
+          description: The revision number of the record
+          example: 1
+        name:
+          type: string
+          description: The workspace release name
+          example: My Workspace release
+        workspace_id:
+          type: string
+          description: The workspace ID
+
+    WorkspaceList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Workspace'
+
+    WorkspaceReleaseList:
+      type: array
+      items:
+        $ref: '#/components/schemas/WorkspaceRelease'
+
+
+  responses:
+    Status400:
+      description: bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+    Status401:
+      description: unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+    Status403:
+      description: forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+    Status404:
+      description: not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+    Status500:
+      description: internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+
+
+  securitySchemes:
+    ApiAuth:
+      type: http
+      scheme: basic
+      description: |
+        ## Example
+
+        Use api.token as the username
+
+        curl --request GET \
+          --url https://platform.slim.dev/account/identity \
+          --header 'accept: application/json' \
+          --header 'authorization: Basic api.token:xxxxxxxxxxxxxxxx'
