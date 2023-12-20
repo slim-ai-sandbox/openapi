@@ -1,9 +1,7 @@
 import os
-import time
+
 import workspace_client
 from workspace_client.exceptions import ApiException as ApiException
-from pprint import pprint
-
 
 # The client must configure the authentication and authorization parameters
 # in accordance with the API server security policy.
@@ -12,7 +10,7 @@ from pprint import pprint
 
 # Configure HTTP basic authorization: ApiAuth
 configuration = workspace_client.Configuration(
-    # host="https://platform.zero.dev.saas.getslim.ai",
+    # host="https://platform.slim.dev",
     host="https://platform.zero.dev.saas.getslim.ai",
     username=os.environ["USERNAME"],
     password=os.environ["PASSWORD"]
@@ -28,7 +26,15 @@ with workspace_client.ApiClient(configuration) as api_client:
     try:
         # Create a new workspace
         api_response = api_instance.list_workspaces()
-        print("The response of WorkspacesApi->list_workspaces:\n")
-        pprint(api_response)
+        print("The response of WorkspacesApi->list_workspaces ", api_response.count, "\n")
+
+        # Create a new workspace
+        create_ws_req = workspace_client.CreateWorkspaceRequest(name="test-workspace")
+        workspace = api_instance.create_workspace(create_ws_req)
+        print("The response of WorkspacesApi->create_workspace ", workspace.data.name, "id: ", workspace.data.id, "\n")
+        workspace = api_instance.update_workspace(workspace.data.id,
+                                                  workspace_client.UpdateWorkspaceRequest(name="test-workspace-2"))
+        print("The response of WorkspacesApi->update_workspace ", workspace.data.name, "id: ", workspace.data.id, "\n")
+        api_instance.delete_workspace(workspace.data.id)
     except ApiException as e:
         print("Exception when calling WorkspacesApi->create_workspace: %s\n" % e)
