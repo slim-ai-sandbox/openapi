@@ -17,4 +17,8 @@ These example have a generate.sh script that gives sample options to use for the
 
 For mac, brew install openapi-generator
 
+Run the generate.sh script to generate the code for the language of your choice.
+THe provided samples assume the generator has been run.
+
+
 
