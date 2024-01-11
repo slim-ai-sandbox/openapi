@@ -41,6 +41,7 @@ paths:
       summary: Create a new workspace
       operationId: createWorkspace
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -118,6 +119,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/WorkspacePathParam'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -222,6 +224,7 @@ paths:
         - $ref: '#/components/parameters/WorkspacePathParam'
 
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -287,6 +290,7 @@ paths:
         - $ref: '#/components/parameters/WorkspacePathParam'
         - $ref: '#/components/parameters/ReleasePathParam'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -362,6 +366,7 @@ paths:
         - $ref: '#/components/parameters/WorkspacePathParam'
         - $ref: '#/components/parameters/ReleasePathParam'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -492,6 +497,7 @@ paths:
           - $ref: '#/components/parameters/ImagePathParam'
           - $ref: '#/components/parameters/VulnerabilityPathParam'
         requestBody:
+          required: true
           content:
             application/json:
               schema:
@@ -527,6 +533,7 @@ paths:
         - $ref: '#/components/parameters/ImagePathParam'
         - $ref: '#/components/parameters/VulnerabilityPathParam'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -965,7 +972,6 @@ components:
 
     UpdateSecurityFindingRequest:
       type: object
-      required: true
       description: The request to update a security finding.  All fields are optional.
       properties:
         status:
