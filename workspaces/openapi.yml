@@ -145,6 +145,45 @@ paths:
       tags:
         - workspaces
 
+  /workspaces/{workspace-id}/vulnerabilities:
+    get:
+      summary: List vulnerabilities aka security findings for the given workspace
+      operationId: listWorkspaceVulnerabilities
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/CursorQueryParam'
+        - $ref: '#/components/parameters/LimitQueryParam'
+        - $ref: '#/components/parameters/SortDirectionQueryParam'
+        - $ref: '#/components/parameters/SortFieldQueryParam'
+        - $ref: '#/components/parameters/RiskLevelQueryParam'
+        - $ref: '#/components/parameters/FixAvailableQueryParam'
+        - $ref: '#/components/parameters/ScannerTypesQueryParam'
+        - $ref: '#/components/parameters/StatusQueryParam'
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  data:
+                    $ref: '#/components/schemas/SecurityFindingList'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
 
   /workspaces/{workspace-id}/releases:
     get:
@@ -274,6 +313,46 @@ paths:
           $ref: '#/components/responses/Status404'
       tags:
         - workspaces
+  /workspaces/{workspace-id}/releases/{release-id/vulnerabilities:
+    get:
+      summary: List vulnerabilities aka security findings for the given workspace/release
+      operationId: listWorkspaceReleaseVulnerabilities
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+        - $ref: '#/components/parameters/CursorQueryParam'
+        - $ref: '#/components/parameters/LimitQueryParam'
+        - $ref: '#/components/parameters/SortDirectionQueryParam'
+        - $ref: '#/components/parameters/SortFieldQueryParam'
+        - $ref: '#/components/parameters/RiskLevelQueryParam'
+        - $ref: '#/components/parameters/FixAvailableQueryParam'
+        - $ref: '#/components/parameters/ScannerTypesQueryParam'
+        - $ref: '#/components/parameters/StatusQueryParam'
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  data:
+                    $ref: '#/components/schemas/SecurityFindingList'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
 
   /workspaces/{workspace-id}/releases/{release-id}/images:
     post:
@@ -334,7 +413,144 @@ paths:
               $ref: '#/components/responses/Status404'
         tags:
             - workspaces
+  /workspaces/{workspace-id}/releases/{release-id}/images/{image-id}/vulnerabilities:
+    get:
+      summary: List vulnerabilities aka security findings for the given workspace/release/image
+      operationId: listWorkspaceImageVulnerabilities
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+        - $ref: '#/components/parameters/ImagePathParam'
+        - $ref: '#/components/parameters/CursorQueryParam'
+        - $ref: '#/components/parameters/LimitQueryParam'
+        - $ref: '#/components/parameters/SortDirectionQueryParam'
+        - $ref: '#/components/parameters/SortFieldQueryParam'
+        - $ref: '#/components/parameters/RiskLevelQueryParam'
+        - $ref: '#/components/parameters/FixAvailableQueryParam'
+        - $ref: '#/components/parameters/ScannerTypesQueryParam'
+        - $ref: '#/components/parameters/StatusQueryParam'
 
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  data:
+                    $ref: '#/components/schemas/SecurityFindingList'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
+  /workspaces/{workspace-id}/releases/{release-id}/images/{image-id}/vulnerabilities/{vulnerability-id}:
+    get:
+      summary: Gets a specific vulnerability aka security finding for the given workspace/release/image
+      operationId: getWorkspaceVulnerability
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+        - $ref: '#/components/parameters/ImagePathParam'
+        - $ref: '#/components/parameters/VulnerabilityPathParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/SecurityFinding'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
+    put:
+        summary: Updates a specific vulnerability aka security finding for the given workspace/release/image
+        operationId: updateWorkspaceVulnerability
+        parameters:
+          - $ref: '#/components/parameters/WorkspacePathParam'
+          - $ref: '#/components/parameters/ReleasePathParam'
+          - $ref: '#/components/parameters/ImagePathParam'
+          - $ref: '#/components/parameters/VulnerabilityPathParam'
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSecurityFindingRequest'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      $ref: '#/components/schemas/BasicAPIReply'
+                    data:
+                      $ref: '#/components/schemas/SecurityFinding'
+          '400':
+            $ref: '#/components/responses/Status400'
+          '401':
+            $ref: '#/components/responses/Status401'
+          '403':
+            $ref: '#/components/responses/Status403'
+        tags:
+          - workspaces
+
+  /workspaces/{workspace-id}/releases/{release-id}/images/{image-id}/vulnerabilities/{vulnerability-id}/comments:
+    post:
+      summary: adds a comment to a security finding (aka vulnerability)
+      operationId: addCommentToSecurityFinding
+      parameters:
+        - $ref: '#/components/parameters/WorkspacePathParam'
+        - $ref: '#/components/parameters/ReleasePathParam'
+        - $ref: '#/components/parameters/ImagePathParam'
+        - $ref: '#/components/parameters/VulnerabilityPathParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddSecurityFindingCommentRequest'
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  data:
+                    $ref: '#/components/schemas/AddSecurityFindingCommentResponse'
+        '400':
+          $ref: '#/components/responses/Status400'
+        '401':
+          $ref: '#/components/responses/Status401'
+        '403':
+          $ref: '#/components/responses/Status403'
+      tags:
+        - workspaces
 components:
   parameters:
     CursorQueryParam:
@@ -351,7 +567,7 @@ components:
       description: The page size limit to retrieve
       schema:
         type: integer
-    SortQueryParam:
+    SortDirectionQueryParam:
       in: query
       name: sort
       required: false
@@ -369,14 +585,40 @@ components:
       schema:
         type: string
         enum:
-          - name
-          - scanner_version
-          - scanner_db_version
-          - critical
-          - high
-          - medium
-          - low
-          - negligible
+          - date_identified
+          - risk_level
+          - status
+
+    RiskLevelQueryParam:
+      in: query
+      name: risk_level
+      required: false
+      description: a comma seperated list of risk levels to filter on
+      schema:
+        type: string
+    FixAvailableQueryParam:
+      in: query
+      name: fix_available
+      required: false
+      description: a comma seperated list of fix_available to filter on
+      schema:
+        type: string
+    ScannerTypesQueryParam:
+      in: query
+      name: scanner_types
+      required: false
+      description: a comma seperated list of scanner_types to filter on
+      schema:
+        type: string
+    StatusQueryParam:
+      in: query
+      name: status
+      required: false
+      description: a comma seperated list of status to filter on
+      schema:
+        type: string
+
+
     WorkspacePathParam:
       in: path
       name: workspace-id
@@ -399,6 +641,14 @@ components:
       description: The image ID
       schema:
         type: string
+    VulnerabilityPathParam:
+      in: path
+      name: vulnerability-id
+      required: true
+      description: The vulnerability ID aka Security Finding ID
+      schema:
+        type: string
+
 
   schemas:
     BasicAPIReply:
@@ -419,7 +669,7 @@ components:
       properties:
         prev:
           type: string
-          description: cursor value for the previous page
+          description: cursor value for the previous page.  Do not assume any format or style for ths string
           example: 'SG93IG1hbnkgZGV2ZWxvcGVycyBkb2VzIGl0IHRha2UgdG8gc2NyZXcgaW4gYSBsaWdodGJ1bGI='
         next:
           type: string
@@ -604,38 +854,202 @@ components:
       items:
         $ref: '#/components/schemas/WorkspaceRelease'
 
+    SecurityFinding:
+      type: object
+      properties:
+          id:
+            type: string
+            description: The security finding ID, this is an opaque string do not assume length or format
+            example: 12345678-1234-1234-1234-123456789012|12345678-1234-1234-1234-123456789012
+          software_package_id:
+            type: string
+            description: The software package ID
+            example: 12345678-1234-1234-1234-123456789012
+          version:
+            type: string
+            description: The software package version
+            example: 1.0.0
+          software_package_name:
+            type: string
+            description: The software package name
+            example: my-package
+          software_package_ecosystem:
+            type: string
+            description: The software package ecosystem
+            example: debian
+          workspace_id:
+            type: string
+            description: The workspace ID
+            example: 12345678-1234-1234-1234-123456789012
+          workspace_release_id:
+            type: string
+            description: The workspace release ID
+            example: 12345678-1234-1234-1234-123456789012
+          workspace_release_digest_id:
+            type: string
+            description: The workspace release digest ID
+            example: 12345678-1234-1234-1234-123456789012
+          external_id:
+            type: string
+            description: The external ID of the finding
+            example: CVE-2019-1234
+          description:
+            type: string
+            description: The description of the finding
+            example: |
+              This is a description of the finding
+          risk_level:
+            type: string
+            description: The risk level of the finding
+            example: high
+          reachable_value:
+            type: string
+            description: The reachable value of the finding, YES, NO or UNKNOWN
+            example: UNKNOWN
+          fix_available:
+            type: string
+            description: enum for fix_available, YES, NO, UNKNOWN
+            example: UNKNOWN
+          date_identified:
+            type: string
+            format: date-time
+            description: The date the finding was identified
+            example: 2019-01-01T00:00:00Z
+          status:
+            type: string
+            description: The status of the finding
+            example: open
+          digest:
+            type: string
+            description: The digest of the finding
+            example: sha256:c9cf959fd83770dfdefd8fb42cfef0761432af36a764c077aed54bbc5bb25368
+          registry:
+            type: string
+            description: The registry of the image
+            example: docker.io
+          repository:
+            type: string
+            description: The repository of the image
+            example: ubuntu
+          tag:
+            type: string
+            description: The tag of the image
+            example: latest
+          platform:
+            type: string
+            description: The platform of the image
+            example: linux/amd64
+          defect_resolution:
+            type: string
+            description: The defect resolution of the finding
+            example:
+          evidence:
+            type: array
+            items:
+              type: string
+            description: The evidence of the finding
+          assigned_user_id:
+            type: string
+            description: The assigned user ID
+            example: 12345678-1234-1234-1234-123456789012
+          scanner_types:
+            type: array
+            items:
+              type: string
+            description: The scanner types where this cve was found
+
+    SecurityFindingList:
+        type: array
+        items:
+            $ref: '#/components/schemas/SecurityFinding'
+
+    UpdateSecurityFindingRequest:
+      type: object
+      required: true
+      description: The request to update a security finding.  All fields are optional.
+      properties:
+        status:
+          type: string
+          enum:
+            - open
+            - awaiting
+            - investigation
+            - affected_wip
+            - mitigated
+            - closed
+          description: The status of the finding.  Optional.
+          example: open
+        assigned_user_id:
+          type: string
+          description: The assigned user ID
+          example: 12345678-1234-1234-1234-123456789012
+        defect_resolution:
+          type: string
+          enum:
+            - fixed_or_patched
+            - will_patch
+            - awaiting_patch_availability
+            - component_not_presented
+            - vulnerable_code_not_present
+            - vulnerable_code_not_in_execute_path
+            - vulnerable_code_cannot_be_controlled
+            - inline_mitigations_already_exist
+          description: The defect resolution of the finding
+
+    AddSecurityFindingCommentRequest:
+      type: object
+      description: The request to add a comment to a security finding.
+      properties:
+        comment:
+          type: string
+          description: The comment to add to the security finding
+          example: This is a comment
+        thread_name:
+          type: string
+          description: The thread name to add the comment to.  This is not visible to the user in the UI but is required.
+          example: My Thread
+
+    AddSecurityFindingCommentResponse:
+      type: object
+      properties:
+        message_id:
+          type: string
+        thread_id:
+            type: string
+
+
 
   responses:
-    Status400:
-      description: bad request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BasicAPIReply'
-    Status401:
-      description: unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BasicAPIReply'
-    Status403:
-      description: forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BasicAPIReply'
-    Status404:
-      description: not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BasicAPIReply'
-    Status500:
-      description: internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BasicAPIReply'
+        Status400:
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+        Status401:
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+        Status403:
+          description: forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+        Status404:
+          description: not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+        Status500:
+          description: internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
 
 
   securitySchemes:
