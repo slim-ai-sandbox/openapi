@@ -524,6 +524,38 @@ paths:
           - workspaces
 
   /workspaces/{workspace-id}/releases/{release-id}/images/{image-id}/vulnerabilities/{vulnerability-id}/comments:
+    get:
+        summary: Gets the comments for a specific vulnerability aka security finding for the given workspace/release/image
+        operationId: getWorkspaceVulnerabilityComments
+        parameters:
+            - $ref: '#/components/parameters/WorkspacePathParam'
+            - $ref: '#/components/parameters/ReleasePathParam'
+            - $ref: '#/components/parameters/ImagePathParam'
+            - $ref: '#/components/parameters/VulnerabilityPathParam'
+        responses:
+            '200':
+              description: OK
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        $ref: '#/components/schemas/BasicAPIReply'
+                      count:
+                        $ref: '#/components/schemas/CountType'
+                      data:
+                        $ref: '#/components/schemas/SecurityFindingCommentList'
+
+            '400':
+              $ref: '#/components/responses/Status400'
+            '401':
+                $ref: '#/components/responses/Status401'
+            '403':
+                $ref: '#/components/responses/Status403'
+        tags:
+          - workspaces
+
     post:
       summary: adds a comment to a security finding (aka vulnerability)
       operationId: addCommentToSecurityFinding
@@ -1023,7 +1055,30 @@ components:
         thread_id:
             type: string
 
+    SecurityFindingCommentList:
+        type: array
+        items:
+            $ref: '#/components/schemas/SecurityFindingComment'
 
+    SecurityFindingComment:
+        type: object
+        properties:
+            comment:
+                type: string
+                description: The comment
+                example: This is a comment
+            user_id:
+                type: string
+                description: The user ID of the user who made the comment
+                example: 12345678-1234-1234-1234-123456789012
+            message_id:
+                type: string
+                description: The message ID of the comment
+                example: 12345678-1234-1234-1234-123456789012
+            thread_id:
+                type: string
+                description: The thread ID of the comment
+                example: 12345678-1234-1234-1234-123456789012
 
   responses:
         Status400:
