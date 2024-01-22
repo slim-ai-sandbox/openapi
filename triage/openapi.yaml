@@ -1,0 +1,391 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is the Triage REST API
+  title: Slim Triage REST API
+  version: 2.0.0
+servers:
+- url: https://platform.slim.dev
+security:
+- ApiAuth: []
+paths:
+  /triage/packages:
+    get:
+      operationId: listPackages
+      parameters:
+        - $ref: '#/components/parameters/WorkspaceFilter'
+        - $ref: '#/components/parameters/WorkspaceReleaseFilter'
+        - $ref: '#/components/parameters/CursorQueryParam'
+        - $ref: '#/components/parameters/LimitQueryParam'
+        - $ref: '#/components/parameters/SortQueryParam'
+        - $ref: '#/components/parameters/SortFieldQueryParam'
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  package_count:
+                    type: integer
+                  vulnerabilities_count:
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/ListOfSoftwarePackages'
+
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+          description: bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+          description: unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+          description: forbidden
+      summary: List of something.  Place holder
+      tags:
+      - triage
+  /triage/package-security-findings/{package_id}:
+    get:
+      description: Get the list of security findings for a given software package in the context of the workspaces and workspace releases.
+      operationId: listPackageSecurityFindings
+      parameters:
+        - $ref: '#/components/parameters/SoftwarePackageIdPathParam'
+        - $ref: '#/components/parameters/WorkspaceFilter'
+        - $ref: '#/components/parameters/WorkspaceReleaseFilter'
+        - $ref: '#/components/parameters/CursorQueryParam'
+        - $ref: '#/components/parameters/LimitQueryParam'
+        - $ref: '#/components/parameters/SortQueryParam'
+        - $ref: '#/components/parameters/SortFieldQueryParam'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    $ref: '#/components/schemas/BasicAPIReply'
+                  cursor:
+                    $ref: '#/components/schemas/Cursor'
+                  count:
+                    $ref: '#/components/schemas/CountType'
+                  data:
+                    $ref: '#/components/schemas/ListOfPackageSecurityFinding'
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+          description: bad request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+          description: unauthorized
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicAPIReply'
+          description: forbidden
+      tags:
+        - triage
+
+components:
+  parameters:
+    SoftwarePackageIdPathParam:
+      description: The id of the software package
+      in: path
+      name: package_id
+      required: true
+      schema:
+        type: string
+      style: simple
+
+    WorkspaceFilter:
+      description: The workspace ids to filter on.  This is a comma seperated list of ids.  If you specify this parameter all releases in the workspaces are included in the results. This parameter can be used with workspace_releases
+      in: query
+      name: workspaces
+      required: false
+      schema:
+        type: string
+      style: simple
+
+    WorkspaceReleaseFilter:
+      description: The workspace release ids to filter on. This is a comma seperated list of ids.  This parameter can be used with workspaces but is not required.
+      in: query
+      name: workspaces_releases
+      required: false
+      schema:
+        type: string
+
+    CursorQueryParam:
+      description: The page cursor to retrieve the next page of results
+      explode: true
+      in: query
+      name: cursor
+      required: false
+      schema:
+        type: string
+
+    LimitQueryParam:
+      description: The page size limit to retrieve
+      explode: true
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+
+    SortQueryParam:
+      description: The sort direction
+      explode: true
+      in: query
+      name: sort
+      required: false
+      schema:
+        enum:
+        - ASC
+        - DESC
+        type: string
+
+    SortFieldQueryParam:
+      description: The sort field
+      in: query
+      name: sort_field
+      required: false
+      schema:
+        type: string
+
+  responses:
+    Status400:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+      description: bad request
+    Status401:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+      description: unauthorized
+    Status403:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+      description: forbidden
+    Status404:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+      description: not found
+    Status500:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicAPIReply'
+      description: internal server error
+  schemas:
+    BasicAPIReply:
+      example:
+        success: true
+        error: something bad happened
+      properties:
+        error:
+          description: Error message
+          example: something bad happened
+          type: string
+        success:
+          description: true on success
+          example: true
+          type: boolean
+      required:
+      - success
+      type: object
+
+    Cursor:
+      example:
+        next: Tm9uZS4gSXRzIGEgaGFyZHdhcmUgcHJvYmxlbS4=
+        prev: SG93IG1hbnkgZGV2ZWxvcGVycyBkb2VzIGl0IHRha2UgdG8gc2NyZXcgaW4gYSBsaWdodGJ1bGI=
+      type: object
+      required: [next, prev]
+      properties:
+        prev:
+          description: cursor value for the previous page
+          example: SG93IG1hbnkgZGV2ZWxvcGVycyBkb2VzIGl0IHRha2UgdG8gc2NyZXcgaW4gYSBsaWdodGJ1bGI=
+          type: string
+          nullable: true
+        next:
+          description: cursor value for the next page
+          example: Tm9uZS4gSXRzIGEgaGFyZHdhcmUgcHJvYmxlbS4=
+          type: string
+          nullable: true
+
+    CountType:
+      description: count of data records
+      example: 1
+      type: integer
+
+    DigestType:
+      description: |
+        The digest of the image index manifest.
+      pattern: "^sha256:[0-9a-f]{64}$"
+      type: string
+
+    ListOfSoftwarePackages:
+      description: List of software packages
+      type: array
+      items:
+        $ref: '#/components/schemas/SoftwarePackage'
+    SoftwarePackage:
+      description: A software package that has vulnerabilities.
+      type: object
+      required: [id, name, version, type, severities]
+      properties:
+        id:
+          description: The id of the software package
+          example: 1234567890
+          type: string
+        name:
+          description: The name of the software package
+          example: "npm"
+          type: string
+        version:
+          description: The version of the software package
+          example: ["1.2.3", "1.2.4"]
+          type: array
+          items:
+             type: string
+        type:
+          description: The type of the software package
+          example: "npm"
+          type: string
+        affected_workspaces:
+          $ref: '#/components/schemas/ListOfAffectedWorkspace'
+        severities:
+          $ref: '#/components/schemas/Severities'
+
+    Severities:
+      type: object
+      required: [critical, high, medium, low, negligible, unknown]
+      properties:
+        critical:
+          type: integer
+          description: number of this type of vulnerabilities
+          nullable: false
+        high:
+          type: integer
+          description: number of this type of vulnerabilities
+        medium:
+          type: integer
+          description: number of this type of vulnerabilities
+        low:
+          type: integer
+          description: number of this type of vulnerabilities
+        negligible:
+          type: integer
+          description: number of this type of vulnerabilities
+        unknown:
+          type: integer
+          description: number of this type of vulnerabilities
+
+
+    ListOfAffectedWorkspace:
+      type: array
+      description: List of affected workspaces
+      items:
+        $ref: '#/components/schemas/AffectedWorkspace'
+    AffectedWorkspace:
+      type: object
+      description: simple id/name pair for affected workspaces
+      properties:
+        id:
+          description: The id of the workspace
+          example: 1234567890
+          type: string
+        name:
+          description: The name of the workspace
+          example: "my workspace"
+          type: string
+
+
+
+    ListOfPackageSecurityFinding:
+      description: List of security findings
+      type: array
+      items:
+          $ref: '#/components/schemas/PackageSecurityFinding'
+    PackageSecurityFinding:
+      description: A security finding for a software package.
+      type: object
+      properties:
+        external_id:
+          description: The external id of the security finding
+          example: CVE-1234567890
+          type: string
+        software_package_id:
+          description: The id of the software package
+          example: 1234567890
+          type: string
+        package_version:
+          description: The version of the software package
+          type: string
+        discovered_at:
+          description: The date the security finding was discovered
+          type: string
+          format: date-time
+        fixed_in:
+          description: The version finding was fixed.
+          type: string
+        image:
+          description: The image the security finding was found in.
+          type: string
+        status:
+          description: The status of the security finding
+          type: string
+        severity:
+          description: The severity of the security finding
+          type: string
+        description:
+          description: The description of the security finding
+          type: string
+
+
+
+
+  securitySchemes:
+    ApiAuth:
+      description: |
+        ## Example
+
+        Use api.token as the username
+
+        curl --request GET \
+          --url https://platform.slim.dev/account/identity \
+          --header 'accept: application/json' \
+          --header 'authorization: Basic api.token:xxxxxxxxxxxxxxxx'
+      scheme: basic
+      type: http
