@@ -26,7 +26,7 @@ with workspace_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = workspace_client.WorkspacesApi(api_client)
     api_instance.api_client.rest_client.pool_manager.connection_pool_kw['cert_reqs'] = 'CERT_NONE'
-    api_instance.api_client.rest_client.pool_manager.connection_pool_kw['assert_hostname'] = False
+    #api_instance.api_client.rest_client.pool_manager.connection_pool_kw['assert_hostname'] = False
 
     try:
         workspaceName = "unit-test"
@@ -38,8 +38,13 @@ with workspace_client.ApiClient(configuration) as api_client:
             if workspace.name == workspaceName:
                 workspaceId = workspace.id
 
+        release_list = api_instance.list_workspaces_releases(workspaceId)
+        release_id = release_list.data[0].id
+        release_vulns = api_instance.list_workspace_release_vulnerabilities(workspaceId, release_id)
         list_vuln_response = api_instance.list_workspace_vulnerabilities(workspaceId)
-        vuln = list_vuln_response.data[0]
+
+        #vuln = list_vuln_response.data[0]
+        vuln = release_vulns.data[0]
         print("The response of WorkspacesApi->list_workspace_vulnerabilities ", vuln.id, "\n")
         update_req = workspace_client.UpdateSecurityFindingRequest()
         update_req.status = "investigation"

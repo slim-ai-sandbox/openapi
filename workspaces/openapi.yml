@@ -317,7 +317,7 @@ paths:
           $ref: '#/components/responses/Status404'
       tags:
         - workspaces
-  /workspaces/{workspace-id}/releases/{release-id/vulnerabilities:
+  /workspaces/{workspace-id}/releases/{release-id}/vulnerabilities:
     get:
       summary: List vulnerabilities aka security findings for the given workspace/release
       operationId: listWorkspaceReleaseVulnerabilities
